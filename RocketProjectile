@@ -1,0 +1,48 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RocketProjectile : MonoBehaviour
+{
+    public GameObject bullet;
+    Rigidbody rb;
+
+    public float timer = 3;
+    public float projectileSpeed = 20f;
+
+    public float explosionForce = 10f;
+    public float explosionRadius = 5f;
+    public float upForce = 0.5f;
+
+    private void Start()
+    {
+        Invoke("DestroyProjectile", timer);
+    }
+
+    void Update()
+    {
+        transform.position += transform.forward * projectileSpeed * Time.deltaTime;
+    }
+
+    void Contact()
+    {
+        Vector3 explosionPosition = bullet.transform.position;
+
+        Debug.Log("Contact");
+
+        rb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius, upForce, ForceMode.Impulse);
+
+        CancelInvoke();
+        DestroyProjectile();
+    }
+
+    void DestroyProjectile()
+    {
+        Destroy(gameObject);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Contact();
+    }
+}
